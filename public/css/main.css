@@ -1,13 +1,13 @@
 :root {
-    --primary: #ff4f8b;
+    --primary: #2dd4bf;
     --secondary: #e6e8ea;
-    --accent: #3b0526;
+    --accent: #4b123d;
     --text: #111111;
     --text-light: #ffffff;
     --muted: #5d6673;
     --border: #d7dde5;
     --surface: #ffffff;
-    --shadow: 0 10px 30px rgba(59, 5, 38, 0.14);
+    --shadow: 0 10px 30px rgba(75, 18, 61, 0.14);
 }
 
 * {
@@ -55,7 +55,7 @@ nav a {
 nav a:hover,
 nav a:focus {
     background: var(--primary);
-    color: var(--text-light);
+    color: var(--text);
     outline: none;
 }
 
