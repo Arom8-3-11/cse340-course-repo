@@ -26,6 +26,7 @@ CREATE TABLE project (
     organization_id INTEGER NOT NULL,
     title VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
+    location VARCHAR(150) NOT NULL,
     project_date DATE NOT NULL,
     UNIQUE (organization_id, title, project_date),
     CONSTRAINT fk_project_organization
@@ -37,23 +38,23 @@ CREATE TABLE project (
 -- ========================================
 -- Insert sample data: Service Projects
 -- ========================================
-INSERT INTO project (organization_id, title, description, project_date)
+INSERT INTO project (organization_id, title, description, location, project_date)
 VALUES
-((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Community Garden Shed Build', 'Build storage sheds for a neighborhood garden program.', '2026-04-11'),
-((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Senior Center Ramp Repair', 'Repair and repaint accessibility ramps at the senior center.', '2026-04-18'),
-((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Playground Safety Refresh', 'Replace worn playground boards and refresh safety surfacing.', '2026-05-02'),
-((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Habitat Porch Project', 'Construct a safe front porch for a local family.', '2026-05-16'),
-((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Shelter Weatherproofing Day', 'Seal windows and improve weatherproofing at a community shelter.', '2026-06-06'),
-((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Urban Farm Planting Day', 'Plant spring vegetables in shared urban garden beds.', '2026-04-04'),
-((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Compost Education Workshop', 'Teach residents how to start and maintain compost systems.', '2026-04-25'),
-((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Fresh Food Distribution', 'Sort and distribute locally grown produce to families.', '2026-05-09'),
-((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'School Garden Setup', 'Prepare raised beds and irrigation for an elementary school garden.', '2026-05-23'),
-((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Pollinator Pathway Planting', 'Plant native flowers to support pollinators around community gardens.', '2026-06-13'),
-((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Weekend Food Pantry Shift', 'Organize donated food and help families pick up pantry boxes.', '2026-04-12'),
-((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Community Tutoring Night', 'Provide homework help and reading support for local students.', '2026-04-28'),
-((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Neighborhood Cleanup Crew', 'Remove litter and clean shared public spaces.', '2026-05-10'),
-((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Health Fair Volunteer Team', 'Help visitors check in and find resources at a community health fair.', '2026-05-30'),
-((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Donation Sorting Drive', 'Sort clothing and household donations for partner charities.', '2026-06-20');
+((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Community Garden Shed Build', 'Build storage sheds for a neighborhood garden program.', 'Downtown Community Garden', '2026-04-11'),
+((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Senior Center Ramp Repair', 'Repair and repaint accessibility ramps at the senior center.', 'Northside Senior Center', '2026-04-18'),
+((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Playground Safety Refresh', 'Replace worn playground boards and refresh safety surfacing.', 'Riverside Park', '2026-05-02'),
+((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Habitat Porch Project', 'Construct a safe front porch for a local family.', 'Maple Street Neighborhood', '2026-05-16'),
+((SELECT organization_id FROM organization WHERE name = 'BrightFuture Builders'), 'Shelter Weatherproofing Day', 'Seal windows and improve weatherproofing at a community shelter.', 'Hope Community Shelter', '2026-06-06'),
+((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Urban Farm Planting Day', 'Plant spring vegetables in shared urban garden beds.', 'GreenHarvest Urban Farm', '2026-04-04'),
+((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Compost Education Workshop', 'Teach residents how to start and maintain compost systems.', 'Community Learning Center', '2026-04-25'),
+((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Fresh Food Distribution', 'Sort and distribute locally grown produce to families.', 'Eastside Food Pantry', '2026-05-09'),
+((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'School Garden Setup', 'Prepare raised beds and irrigation for an elementary school garden.', 'Lincoln Elementary School', '2026-05-23'),
+((SELECT organization_id FROM organization WHERE name = 'GreenHarvest Growers'), 'Pollinator Pathway Planting', 'Plant native flowers to support pollinators around community gardens.', 'Meadowbrook Trail', '2026-06-13'),
+((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Weekend Food Pantry Shift', 'Organize donated food and help families pick up pantry boxes.', 'Central Food Pantry', '2026-04-12'),
+((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Community Tutoring Night', 'Provide homework help and reading support for local students.', 'Westside Library', '2026-04-28'),
+((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Neighborhood Cleanup Crew', 'Remove litter and clean shared public spaces.', 'Oak Avenue District', '2026-05-10'),
+((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Health Fair Volunteer Team', 'Help visitors check in and find resources at a community health fair.', 'Civic Center Hall', '2026-05-30'),
+((SELECT organization_id FROM organization WHERE name = 'UnityServe Volunteers'), 'Donation Sorting Drive', 'Sort clothing and household donations for partner charities.', 'UnityServe Donation Center', '2026-06-20');
 
 -- ========================================
 -- Category Table
