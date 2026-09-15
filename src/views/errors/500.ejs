@@ -1,0 +1,21 @@
+<%# 
+  500 Error Page Template
+  Rendered when an unhandled exception or server error occurs.
+  Displays friendly message in production, and shows detailed stack traces in development.
+%>
+<%- include('../partials/header') %>
+<main>
+    <h1>Something Went Wrong</h1>
+    <p>We are experiencing technical difficulties. Our team has been notified and is working to fix the issue.</p>
+    <p>Return to the <a href="/">homepage</a> to continue browsing.</p>
+    
+    <% /* Show technical error details and stack trace only during development */ %>
+    <% if (NODE_ENV === 'development') { %>
+        <details open>
+            <summary>Error Details (Development Only)</summary>
+            <pre><%= error %></pre>
+            <pre><%= stack %></pre>
+        </details>
+    <% } %>
+</main>
+<%- include('../partials/footer') %>

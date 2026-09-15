@@ -1,21 +1,29 @@
-import db from './db.js'
+import db from './db.js';
 
-const getAllOrganizations = async() => {
+// Function to retrieve all organizations from the database
+const getAllOrganizations = async () => {
     const query = `
         SELECT organization_id, name, description, contact_email, logo_filename
-      FROM public.organization;
+        FROM public.organization;
     `;
 
     const result = await db.query(query);
 
     return result.rows;
-}
+};
 
-export {getAllOrganizations}  
+// Function to retrieve details of a specific organization by its ID
+// Uses a parameterized query ($1) to prevent SQL injection vulnerabilities
+const getOrganizationById = async (organizationId) => {
+    const query = `
+        SELECT organization_id, name, description, contact_email, logo_filename
+        FROM public.organization
+        WHERE organization_id = $1;
+    `;
 
-// This code does the following:
+    const result = await db.query(query, [organizationId]);
 
-// Imports the database connection from the db.js file.
-// Defines an asynchronous function getAllOrganizations that queries the database for all organizations.
-// Returns the rows of the result if successful.
-// Exports the getAllOrganizations function so it can be used in other parts of the application.
+    return result.rows[0];
+};
+
+export { getAllOrganizations, getOrganizationById };

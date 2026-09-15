@@ -2,10 +2,9 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllProjects } from './src/models/projects.js';
-import { getAllCategories } from './src/models/categories.js';
-// define app. environment
+import router from './src/routes.js';
+
+// Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 // define port number server will listen on
 const PORT = process.env.PORT || 3000;
@@ -21,35 +20,64 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //config calls must come before routes because express needs to know about the templating engine before it tries to render any templates.
 app.set('view engine', 'ejs');
+
+// Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src/views'));
 
-// define routes
-app.get('/', async (req, res) => {
-    const title = 'Home';
-    res.render('home', { title });
+// ==========================================
+// Custom Application Middleware
+// ==========================================
+
+// Middleware to log all incoming requests (runs on every request)
+app.use((req, res, next) => {
+    if (NODE_ENV === 'development') {
+        console.log(`${req.method} ${req.url}`);
+    }
+    next(); // Pass control to the next middleware or route
 });
 
-app.get('/organizations', async (req, res) => {
-    const organizations = await getAllOrganizations();
-    const title = 'Our Partner Organizations';
-
-    res.render('organizations', { title, organizations });
+// Middleware to make NODE_ENV available to all EJS templates via res.locals
+app.use((req, res, next) => {
+    res.locals.NODE_ENV = NODE_ENV;
+    next(); // Pass control to the next middleware or route
 });
 
-app.get('/projects', async (req, res) => {
-    const projects = await getAllProjects();
-    const title = 'Service Projects';
+// Use the imported router to handle application routes
+app.use(router);
 
-    res.render('projects', { title, projects });
+// ==========================================
+// Error Handling Middleware
+// ==========================================
+
+// Catch-all route for 404 errors (triggers if no routes matched above)
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err); // Forward 404 error to the global error handler
 });
 
-app.get('/categories', async (req, res) => {
-    const categories = await getAllCategories();
-    const title = 'Service Project Categories';
-
-    res.render('categories', { title, categories });
+// Global error handler (4 parameters tells Express this is an error-handling middleware)
+app.use((err, req, res, next) => {
+    // Log error details to the server console for debugging
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
+    
+    // Determine status and template based on error status
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+    
+    // Prepare data context for the error template
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+    
+    // Render the appropriate error template with the status code
+    res.status(status).render(`errors/${template}`, context);
 });
 
+// Start listening for incoming connections
 app.listen(PORT, async () => {
   try {
     await testConnection();
