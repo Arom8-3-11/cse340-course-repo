@@ -1,5 +1,7 @@
 // Import project model functions
 import { getUpcomingProjects, getProjectDetails } from '../models/projects.js';
+// Import category model functions to retrieve categories for a specific project
+import { getCategoriesByProjectId } from '../models/categories.js';
 
 // Number of upcoming projects to display on the main service projects page
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
@@ -31,9 +33,11 @@ const showProjectDetailsPage = async (req, res, next) => {
             return next(err);
         }
 
+        // Retrieve category tags associated with this project
+        const categories = await getCategoriesByProjectId(id);
         const title = project.title;
 
-        res.render('project', { title, project });
+        res.render('project', { title, project, categories });
     } catch (error) {
         next(error);
     }

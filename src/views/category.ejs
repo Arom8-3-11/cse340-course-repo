@@ -1,0 +1,25 @@
+<%# 
+  Category Details View Template
+  Displays the category name and lists all service projects associated with this category.
+%>
+<%- include('partials/header') %>
+<main>
+    <h1><%= title %></h1>
+    <h2>Service Projects for <%= category.name %></h2>
+
+    <% if (projects && projects.length > 0) { %>
+        <ul>
+            <% projects.forEach(project => { %>
+                <li>
+                    <strong><a href="/project/<%= project.project_id %>"><%= project.title %></a></strong>
+                    (<a href="/organization/<%= project.organization_id %>"><em><%= project.organization_name %></em></a>)
+                    - <%= project.location %> (<%= new Date(project.project_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>)
+                    <p><%= project.description %></p>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No service projects currently found for this category.</p>
+    <% } %>
+</main>
+<%- include('partials/footer') %>
