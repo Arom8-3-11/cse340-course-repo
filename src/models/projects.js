@@ -16,7 +16,7 @@ const getAllProjects = async () => {
     return result.rows;
 };
 
-// Function to retrieve the next upcoming service projects (date >= today)
+// Function to retrieve the next upcoming service projects
 // Parameterized with $1 for LIMIT to accept any number of projects dynamically and securely
 const getUpcomingProjects = async (number_of_projects) => {
     const query = `
@@ -32,7 +32,6 @@ const getUpcomingProjects = async (number_of_projects) => {
         FROM public.project p
         JOIN public.organization o
             ON p.organization_id = o.organization_id
-        WHERE p.project_date >= CURRENT_DATE
         ORDER BY p.project_date ASC
         LIMIT $1;
     `;
