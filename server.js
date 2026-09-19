@@ -24,9 +24,7 @@ app.set('view engine', 'ejs');
 // Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src/views'));
 
-// ==========================================
-// Custom Application Middleware
-// ==========================================
+// Application Middleware
 
 // Middleware to log all incoming requests (runs on every request)
 app.use((req, res, next) => {
@@ -45,9 +43,7 @@ app.use((req, res, next) => {
 // Use the imported router to handle application routes
 app.use(router);
 
-// ==========================================
 // Error Handling Middleware
-// ==========================================
 
 // Catch-all route for 404 errors (triggers if no routes matched above)
 app.use((req, res, next) => {

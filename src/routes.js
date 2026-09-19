@@ -10,9 +10,9 @@ import { testErrorPage } from './controllers/errors.js';
 // Create Express router instance
 const router = express.Router();
 
-// =======================
+
 // Main Application Routes
-// =======================
+
 
 // Home page route
 router.get('/', showHomePage);
@@ -29,9 +29,8 @@ router.get('/project/:id', showProjectDetailsPage);
 router.get('/categories', showCategoriesPage);
 router.get('/category/:id', showCategoryDetailPage);
 
-// =======================
+
 // Error Handling Test Routes
-// =======================
 router.get('/test-error', testErrorPage);
 
 export default router;
