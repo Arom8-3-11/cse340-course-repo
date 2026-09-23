@@ -59,6 +59,40 @@ nav a:focus {
     outline: none;
 }
 
+/* Flash message styles: shown at the top of each page and cleared after one view */
+.flash-message {
+    max-width: 1100px;
+    margin: 0.85rem auto 0;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+.flash-success {
+    background: #e3f9e5;
+    border-color: #a3d9a5;
+    color: #1e4620;
+}
+
+.flash-error {
+    background: #fde8e8;
+    border-color: #f3a4a4;
+    color: #611a1a;
+}
+
+.flash-warning {
+    background: #fff8e1;
+    border-color: #f0d488;
+    color: #6b4f00;
+}
+
+.flash-info {
+    background: #e6f4fb;
+    border-color: #a9d7ef;
+    color: #0d3b52;
+}
+
 main {
     max-width: 1000px;
     margin: 2rem auto;

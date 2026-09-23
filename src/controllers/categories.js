@@ -2,8 +2,12 @@
 import { 
     getAllCategories, 
     getCategoryById, 
-    getProjectsByCategoryId 
+    getProjectsByCategoryId,
+    getCategoriesByProjectId,
+    updateCategoryAssignments
 } from '../models/categories.js';
+// Import project model function to display project details on the assign categories form
+import { getProjectDetails } from '../models/projects.js';
 
 // Define controller functions
 
@@ -43,4 +47,43 @@ const showCategoryDetailPage = async (req, res, next) => {
 };
 
 // Export controller functions
-export { showCategoriesPage, showCategoryDetailPage };
+export { 
+    showCategoriesPage, 
+    showCategoryDetailPage, 
+    showAssignCategoriesForm, 
+    processAssignCategoriesForm 
+};
+
+// Controller to render the checkbox form used to assign categories to a project
+const showAssignCategoriesForm = async (req, res, next) => {
+    const projectId = req.params.projectId;
+
+    const projectDetails = await getProjectDetails(projectId);
+
+    if (!projectDetails) {
+        const err = new Error('Project Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    const categories = await getAllCategories();
+    // Categories already linked to this project, used to pre-check their checkboxes
+    const assignedCategories = await getCategoriesByProjectId(projectId);
+
+    const title = 'Assign Categories to Project';
+
+    res.render('assign-categories', { title, projectId, projectDetails, categories, assignedCategories });
+};
+
+// Controller to process the assign categories form submission (POST)
+const processAssignCategoriesForm = async (req, res) => {
+    const projectId = req.params.projectId;
+    const selectedCategoryIds = req.body.categoryIds || [];
+
+    // A single checked checkbox submits a string instead of an array, so normalize it here
+    const categoryIdsArray = Array.isArray(selectedCategoryIds) ? selectedCategoryIds : [selectedCategoryIds];
+
+    await updateCategoryAssignments(projectId, categoryIdsArray);
+    req.flash('success', 'Categories updated successfully.');
+    res.redirect(`/project/${projectId}`);
+};

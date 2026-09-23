@@ -1,13 +1,17 @@
 import express from 'express';
+import session from 'express-session';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
 import router from './src/routes.js';
+import flash from './src/middleware/flash.js';
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 // define port number server will listen on
 const PORT = process.env.PORT || 3000;
+// secret key used to sign the session ID cookie (keep this private, never commit .env)
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +29,20 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
 // Application Middleware
+
+// In-memory session storage; gives each visitor a req.session object to persist data across requests
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Flash messages rely on req.session, so this must run after the session middleware
+app.use(flash);
+
+// Allow Express to receive and process common POST data (form submissions and JSON bodies)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Middleware to log all incoming requests (runs on every request)
 app.use((req, res, next) => {

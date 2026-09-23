@@ -75,5 +75,32 @@ export {
     getAllCategories, 
     getCategoryById, 
     getCategoriesByProjectId, 
-    getProjectsByCategoryId 
+    getProjectsByCategoryId,
+    updateCategoryAssignments
+};
+
+// Inserts a single category/project link into the many-to-many junction table
+// Not exported; only used internally by updateCategoryAssignments
+const assignCategoryToProject = async (categoryId, projectId) => {
+    const query = `
+        INSERT INTO project_category (category_id, project_id)
+        VALUES ($1, $2);
+    `;
+
+    await db.query(query, [categoryId, projectId]);
+};
+
+// Replaces all category assignments for a project with the given list of category IDs
+const updateCategoryAssignments = async (projectId, categoryIds) => {
+    // Remove existing category links for this project first
+    const deleteQuery = `
+        DELETE FROM project_category
+        WHERE project_id = $1;
+    `;
+    await db.query(deleteQuery, [projectId]);
+
+    // Re-create a link for each selected category
+    for (const categoryId of categoryIds) {
+        await assignCategoryToProject(categoryId, projectId);
+    }
 };

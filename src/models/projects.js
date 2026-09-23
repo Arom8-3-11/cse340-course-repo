@@ -85,5 +85,28 @@ export {
     getAllProjects, 
     getUpcomingProjects, 
     getProjectDetails, 
-    getProjectsByOrganizationId 
+    getProjectsByOrganizationId,
+    createProject
+};
+
+// Function to insert a new service project tied to a sponsoring organization; returns the new ID
+const createProject = async (title, description, location, date, organizationId) => {
+    const query = `
+        INSERT INTO project (title, description, location, project_date, organization_id)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING project_id;
+    `;
+
+    const queryParams = [title, description, location, date, organizationId];
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create project');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new project with ID:', result.rows[0].project_id);
+    }
+
+    return result.rows[0].project_id;
 };

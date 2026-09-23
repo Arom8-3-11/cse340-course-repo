@@ -16,3 +16,13 @@
             <li><a href="/categories">Categories</a></li>
         </ul>
     </nav>
+
+    <% /* Reads and clears any flash messages set on the previous request, then renders them */ %>
+    <% const flashMessages = typeof flash === 'function' ? flash() : null; %>
+    <% if (flashMessages) { %>
+        <% Object.keys(flashMessages).forEach(type => { %>
+            <% flashMessages[type].forEach(message => { %>
+                <div class="flash-message flash-<%= type %>"><%= message %></div>
+            <% }); %>
+        <% }); %>
+    <% } %>
