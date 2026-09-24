@@ -81,10 +81,12 @@ app.use((err, req, res, next) => {
     const template = status === 404 ? '404' : '500';
     
     // Prepare data context for the error template
+    // NODE_ENV is included explicitly since earlier middleware (which normally sets it) may not have run
     const context = {
         title: status === 404 ? 'Page Not Found' : 'Server Error',
         error: err.message,
-        stack: err.stack
+        stack: err.stack,
+        NODE_ENV
     };
     
     // Render the appropriate error template with the status code
