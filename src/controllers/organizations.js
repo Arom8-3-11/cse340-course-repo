@@ -7,12 +7,10 @@ import { body, validationResult } from 'express-validator';
 const organizationValidation = [
     body('name')
         .trim()
-        .escape()
         .isLength({ min: 3, max: 150 })
         .withMessage('Organization name must be between 3 and 150 characters.'),
     body('description')
         .trim()
-        .escape()
         .notEmpty()
         .withMessage('Organization description is required.')
         .isLength({ max: 500 })

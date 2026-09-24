@@ -76,7 +76,41 @@ export {
     getCategoryById, 
     getCategoriesByProjectId, 
     getProjectsByCategoryId,
-    updateCategoryAssignments
+    updateCategoryAssignments,
+    createCategory,
+    updateCategory
+};
+
+// Function to insert a new category and return the ID of the created record
+const createCategory = async (name) => {
+    const query = `
+        INSERT INTO category (name)
+        VALUES ($1)
+        RETURNING category_id;
+    `;
+
+    const result = await db.query(query, [name]);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create category');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new category with ID:', result.rows[0].category_id);
+    }
+
+    return result.rows[0].category_id;
+};
+
+// Function to update the name of an existing category by its ID
+const updateCategory = async (id, name) => {
+    const query = `
+        UPDATE category
+        SET name = $2
+        WHERE category_id = $1;
+    `;
+
+    await db.query(query, [id, name]);
 };
 
 // Inserts a single category/project link into the many-to-many junction table

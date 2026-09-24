@@ -4,10 +4,23 @@ import {
     getCategoryById, 
     getProjectsByCategoryId,
     getCategoriesByProjectId,
-    updateCategoryAssignments
+    updateCategoryAssignments,
+    createCategory,
+    updateCategory
 } from '../models/categories.js';
 // Import project model function to display project details on the assign categories form
 import { getProjectDetails } from '../models/projects.js';
+import { body, validationResult } from 'express-validator';
+
+// Validation + sanitization rules shared by the new and edit category forms
+const categoryValidation = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Category name is required.')
+        .isLength({ min: 3, max: 100 })
+        .withMessage('Category name must be between 3 and 100 characters.')
+];
 
 // Define controller functions
 
@@ -51,7 +64,75 @@ export {
     showCategoriesPage, 
     showCategoryDetailPage, 
     showAssignCategoriesForm, 
-    processAssignCategoriesForm 
+    processAssignCategoriesForm,
+    showNewCategoryForm,
+    processNewCategoryForm,
+    showEditCategoryForm,
+    processEditCategoryForm,
+    categoryValidation
+};
+
+// Controller to render the blank form for creating a new category
+const showNewCategoryForm = async (req, res) => {
+    const title = 'Add New Category';
+
+    res.render('new-category', { title });
+};
+
+// Controller to process the new category form submission (POST)
+const processNewCategoryForm = async (req, res) => {
+    // Check the validation rules applied to this route before touching the database
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+        // Store each validation error as a flash message, then send the user back to the form
+        results.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+
+        return res.redirect('/new-category');
+    }
+
+    const { name } = req.body;
+
+    const categoryId = await createCategory(name);
+    req.flash('success', 'Category added successfully!');
+    res.redirect(`/category/${categoryId}`);
+};
+
+// Controller to render the edit form, pre-populated with the category's current data
+const showEditCategoryForm = async (req, res, next) => {
+    const categoryId = req.params.id;
+    const categoryDetails = await getCategoryById(categoryId);
+
+    if (!categoryDetails) {
+        const err = new Error('Category Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    const title = 'Edit Category';
+    res.render('edit-category', { title, categoryDetails });
+};
+
+// Controller to process the edit category form submission (POST)
+const processEditCategoryForm = async (req, res) => {
+    const categoryId = req.params.id;
+
+    // Reuses the same validation rules as the new category form
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+        results.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+
+        return res.redirect(`/edit-category/${categoryId}`);
+    }
+
+    const { name } = req.body;
+
+    await updateCategory(categoryId, name);
+    req.flash('success', 'Category updated successfully!');
+    res.redirect(`/category/${categoryId}`);
 };
 
 // Controller to render the checkbox form used to assign categories to a project
