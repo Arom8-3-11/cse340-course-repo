@@ -2,7 +2,7 @@
 <main>
     <h1><%= title %></h1>
 
-    <form action="/new-project" method="POST">
+    <form action="/edit-project/<%= project.project_id %>" method="POST">
         <div class="form-group">
             <label for="title">Project Title</label>
             <input
@@ -11,6 +11,7 @@
                 name="title"
                 maxlength="150"
                 required
+                value="<%= project.title %>"
             />
         </div>
 
@@ -21,7 +22,7 @@
                 name="description"
                 maxlength="500"
                 required
-            ></textarea>
+            ><%= project.description %></textarea>
         </div>
 
         <div class="form-group">
@@ -32,6 +33,7 @@
                 name="location"
                 maxlength="255"
                 required
+                value="<%= project.location %>"
             />
         </div>
 
@@ -42,6 +44,7 @@
                 id="date"
                 name="date"
                 required
+                value="<%= new Date(project.project_date || project.date).toISOString().split('T')[0] %>"
             />
         </div>
 
@@ -52,9 +55,11 @@
                 name="organizationId"
                 required
             >
-                <option value="">Select an organization</option>
                 <% organizations.forEach(org => { %>
-                    <option value="<%= org.organization_id %>"><%= org.name %></option>
+                    <option
+                        value="<%= org.organization_id %>"
+                        <%= org.organization_id === project.organization_id ? 'selected' : '' %>
+                    ><%= org.name %></option>
                 <% }); %>
             </select>
         </div>
@@ -68,13 +73,14 @@
                         id="category-<%= category.category_id %>"
                         name="categoryIds"
                         value="<%= category.category_id %>"
+                        <%= assignedCategories.some(assigned => assigned.category_id === category.category_id) ? 'checked' : '' %>
                     />
                     <label for="category-<%= category.category_id %>"><%= category.name %></label>
                 </div>
             <% }); %>
         </fieldset>
 
-        <button type="submit">Create Project</button>
+        <button type="submit">Update Project</button>
     </form>
 
 </main>

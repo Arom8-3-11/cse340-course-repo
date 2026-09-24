@@ -1,7 +1,7 @@
 // Import project model functions
-import { getUpcomingProjects, getProjectDetails, createProject } from '../models/projects.js';
-// Import category model functions to retrieve categories for a specific project
-import { getCategoriesByProjectId } from '../models/categories.js';
+import { getUpcomingProjects, getProjectDetails, createProject, updateProject } from '../models/projects.js';
+// Import category model functions used by project forms and project details
+import { getAllCategories, getCategoriesByProjectId, updateCategoryAssignments } from '../models/categories.js';
 // Import organization model function to populate the organization dropdown on the new project form
 import { getAllOrganizations } from '../models/organizations.js';
 import { body, validationResult } from 'express-validator';
@@ -84,15 +84,18 @@ export {
     showProjectDetailsPage, 
     showNewProjectForm, 
     processNewProjectForm, 
+    showEditProjectForm,
+    processEditProjectForm,
     projectValidation 
 };
 
 // Controller to render the new service project form, including the organization dropdown
 const showNewProjectForm = async (req, res) => {
     const organizations = await getAllOrganizations();
+    const categories = await getAllCategories();
     const title = 'Add New Service Project';
 
-    res.render('new-project', { title, organizations });
+    res.render('new-project', { title, organizations, categories });
 };
 
 // Controller to process the new service project form submission (POST)
@@ -108,8 +111,54 @@ const processNewProjectForm = async (req, res) => {
     }
 
     const { title, description, location, date, organizationId } = req.body;
+    const selectedCategoryIds = req.body.categoryIds || [];
+    const categoryIds = Array.isArray(selectedCategoryIds) ? selectedCategoryIds : [selectedCategoryIds];
 
     const newProjectId = await createProject(title, description, location, date, organizationId);
+    await updateCategoryAssignments(newProjectId, categoryIds);
     req.flash('success', 'New service project created successfully!');
     res.redirect(`/project/${newProjectId}`);
+};
+
+// Controller to render the edit form, pre-populated with the project's current data
+const showEditProjectForm = async (req, res, next) => {
+    const projectId = req.params.id;
+    const project = await getProjectDetails(projectId);
+
+    if (!project) {
+        const err = new Error('Project Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    const organizations = await getAllOrganizations();
+    const categories = await getAllCategories();
+    const assignedCategories = await getCategoriesByProjectId(projectId);
+    const title = 'Edit Service Project';
+
+    res.render('edit-project', { title, project, organizations, categories, assignedCategories });
+};
+
+// Controller to process the edit service project form submission (POST)
+const processEditProjectForm = async (req, res) => {
+    const projectId = req.params.id;
+
+    // Reuses the same validation rules as the new project form
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+        results.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+
+        return res.redirect(`/edit-project/${projectId}`);
+    }
+
+    const { title, description, location, date, organizationId } = req.body;
+    const selectedCategoryIds = req.body.categoryIds || [];
+    const categoryIds = Array.isArray(selectedCategoryIds) ? selectedCategoryIds : [selectedCategoryIds];
+
+    await updateProject(projectId, title, description, location, date, organizationId);
+    await updateCategoryAssignments(projectId, categoryIds);
+    req.flash('success', 'Service project updated successfully!');
+    res.redirect(`/project/${projectId}`);
 };
