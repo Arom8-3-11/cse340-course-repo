@@ -31,6 +31,22 @@ nav {
     border-bottom: 5px solid var(--primary);
 }
 
+.nav-toggle {
+    display: none;
+}
+
+.nav-toggle-icon {
+    display: grid;
+    gap: 4px;
+    width: 20px;
+}
+
+.nav-toggle-icon span {
+    display: block;
+    height: 2px;
+    background: currentColor;
+}
+
 nav ul {
     max-width: 1100px;
     margin: 0 auto;
@@ -203,6 +219,7 @@ fieldset.form-group div {
 
 input[type="text"],
 input[type="email"],
+input[type="password"],
 input[type="date"],
 select,
 textarea {
@@ -265,17 +282,59 @@ footer p {
 }
 
 @media (max-width: 700px) {
+    nav.site-navigation {
+        position: relative;
+    }
+
+    nav .nav-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        min-width: 44px;
+        min-height: 44px;
+        margin: 0.5rem 1rem 0.5rem auto;
+        padding: 0.5rem 0.75rem;
+        color: var(--text-light);
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 6px;
+    }
+
+    nav .nav-toggle:hover {
+        color: var(--text);
+        background: var(--primary);
+    }
+
     nav ul {
-        justify-content: stretch;
+        display: none;
+        position: absolute;
+        z-index: 10;
+        top: 100%;
+        right: 0;
+        left: 0;
+        max-width: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+        margin: 0;
+        padding: 0.5rem 1rem 1rem;
+        background: var(--accent);
+        border-bottom: 5px solid var(--primary);
+        box-shadow: var(--shadow);
+    }
+
+    nav[data-menu-open="true"] ul {
+        display: flex;
     }
 
     nav li {
-        flex: 1 1 100%;
+        flex: 0 0 auto;
+        width: 100%;
     }
 
     nav a {
         display: block;
-        text-align: center;
+        text-align: left;
     }
 
     main {

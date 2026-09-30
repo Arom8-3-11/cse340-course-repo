@@ -52,8 +52,9 @@ app.use((req, res, next) => {
     next(); // Pass control to the next middleware or route
 });
 
-// Middleware to make NODE_ENV available to all EJS templates via res.locals
+// Middleware to make environment and authentication state available to EJS templates
 app.use((req, res, next) => {
+    res.locals.isLoggedIn = Boolean(req.session?.user);
     res.locals.NODE_ENV = NODE_ENV;
     next(); // Pass control to the next middleware or route
 });

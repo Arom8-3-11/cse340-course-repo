@@ -32,6 +32,16 @@ import {
     categoryValidation
 } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
+import {
+    showUserRegistrationForm,
+    processUserRegistrationForm,
+    showLoginForm,
+    processLoginForm,
+    processLogout,
+    registrationValidation,
+    requireLogin,
+    showDashboard
+} from './controllers/users.js';
 
 // Create Express router instance
 const router = express.Router();
@@ -42,6 +52,14 @@ const router = express.Router();
 
 // Home page route
 router.get('/', showHomePage);
+
+// User registration and authentication routes
+router.get('/register', showUserRegistrationForm);
+router.post('/register', registrationValidation, processUserRegistrationForm);
+router.get('/login', showLoginForm);
+router.post('/login', processLoginForm);
+router.get('/logout', processLogout);
+router.get('/dashboard', requireLogin, showDashboard);
 
 // Partner organizations routes
 router.get('/organizations', showOrganizationsPage);
