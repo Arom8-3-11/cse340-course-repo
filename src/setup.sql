@@ -141,3 +141,34 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
+
+-- Admin check
+
+-- -- Check the registered users without displaying password hashes
+-- SELECT u.user_id, u.name, u.email, r.role_name, u.created_at
+-- FROM users u
+-- LEFT JOIN roles r ON u.role_id = r.role_id
+-- ORDER BY u.user_id;
+
+-- -- Confirm the roles available
+-- SELECT role_id, role_name, role_description
+-- FROM roles
+-- ORDER BY role_id;
+
+-- -- Promote the dedicated testing account to admin
+-- UPDATE users
+-- SET role_id = (
+--     SELECT role_id
+--     FROM roles
+--     WHERE role_name = 'admin'
+-- )
+-- WHERE email = 'admin@example.com'
+-- RETURNING user_id, email, role_id;
+
+-- -- Verify the final role
+-- SELECT u.user_id, u.email, r.role_name
+-- FROM users u
+-- JOIN roles r ON u.role_id = r.role_id
+-- WHERE u.email = 'admin@example.com';

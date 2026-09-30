@@ -55,6 +55,8 @@ app.use((req, res, next) => {
 // Middleware to make environment and authentication state available to EJS templates
 app.use((req, res, next) => {
     res.locals.isLoggedIn = Boolean(req.session?.user);
+    // EJS views use the session role to show or hide admin controls.
+    res.locals.user = req.session?.user || null;
     res.locals.NODE_ENV = NODE_ENV;
     next(); // Pass control to the next middleware or route
 });

@@ -106,9 +106,24 @@ const requireLogin = (req, res, next) => {
     next();
 };
 
+// Return middleware configured for one role, such as requireRole('admin').
+const requireRole = (role) => (req, res, next) => {
+    if (!req.session?.user) {
+        req.flash('error', 'You must be logged in to access this page.');
+        return res.redirect('/login');
+    }
+
+    if (req.session.user.role_name !== role) {
+        req.flash('error', 'You do not have permission to access this page.');
+        return res.redirect('/');
+    }
+
+    next();
+};
+
 const showDashboard = (req, res) => {
-    const { name, email } = req.session.user;
-    res.render('dashboard', { title: 'Dashboard', name, email });
+    const { name, email, role_name: role } = req.session.user;
+    res.render('dashboard', { title: 'Dashboard', name, email, role });
 };
 
 export {
@@ -119,5 +134,6 @@ export {
     processLoginForm,
     processLogout,
     requireLogin,
+    requireRole,
     showDashboard
 };
