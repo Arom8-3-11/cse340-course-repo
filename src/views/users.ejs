@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+<main>
+    <h1><%= title %></h1>
+
+    <% if (users.length > 0) { %>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(registeredUser => { %>
+                        <tr>
+                            <td><%= registeredUser.name %></td>
+                            <td><%= registeredUser.email %></td>
+                            <td><%= registeredUser.role_name || 'Unassigned' %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <p>No users are registered yet.</p>
+    <% } %>
+</main>
+<%- include('partials/footer') %>

@@ -4,5 +4,8 @@
     <p>Name: <%= name %></p>
     <p>Email: <%= email %></p>
     <p>Role: <%= role %></p>
+    <% if (user && user.role_name === 'admin') { %>
+        <p><a href="/users">View Registered Users</a></p>
+    <% } %>
 </main>
 <%- include('partials/footer') %>

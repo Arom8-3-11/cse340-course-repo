@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { body, validationResult } from 'express-validator';
-import { authenticateUser, createUser } from '../models/users.js';
+import { authenticateUser, createUser, getAllUsers } from '../models/users.js';
 
 const registrationValidation = [
     body('name')
@@ -107,7 +107,7 @@ const requireLogin = (req, res, next) => {
 };
 
 // Return middleware configured for one role, such as requireRole('admin').
-const requireRole = (role) => (req, res, next) => {
+const requireRole = (role, unauthorizedRedirect = '/') => (req, res, next) => {
     if (!req.session?.user) {
         req.flash('error', 'You must be logged in to access this page.');
         return res.redirect('/login');
@@ -115,7 +115,7 @@ const requireRole = (role) => (req, res, next) => {
 
     if (req.session.user.role_name !== role) {
         req.flash('error', 'You do not have permission to access this page.');
-        return res.redirect('/');
+        return res.redirect(unauthorizedRedirect);
     }
 
     next();
@@ -124,6 +124,11 @@ const requireRole = (role) => (req, res, next) => {
 const showDashboard = (req, res) => {
     const { name, email, role_name: role } = req.session.user;
     res.render('dashboard', { title: 'Dashboard', name, email, role });
+};
+
+const showUsersPage = async (req, res) => {
+    const users = await getAllUsers();
+    res.render('users', { title: 'Registered Users', users });
 };
 
 export {
@@ -135,5 +140,6 @@ export {
     processLogout,
     requireLogin,
     requireRole,
-    showDashboard
+    showDashboard,
+    showUsersPage
 };

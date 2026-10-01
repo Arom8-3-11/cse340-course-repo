@@ -41,7 +41,8 @@ import {
     registrationValidation,
     requireLogin,
     requireRole,
-    showDashboard
+    showDashboard,
+    showUsersPage
 } from './controllers/users.js';
 
 // Create Express router instance
@@ -61,6 +62,7 @@ router.get('/login', showLoginForm);
 router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
 router.get('/dashboard', requireLogin, showDashboard);
+router.get('/users', requireRole('admin', '/dashboard'), showUsersPage);
 
 // Partner organizations routes
 router.get('/organizations', showOrganizationsPage);
