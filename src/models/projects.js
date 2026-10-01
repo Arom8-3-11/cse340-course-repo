@@ -87,7 +87,8 @@ export {
     getProjectDetails, 
     getProjectsByOrganizationId,
     createProject,
-    updateProject
+    updateProject,
+    deleteProject
 };
 
 // Function to insert a new service project tied to a sponsoring organization; returns the new ID
@@ -127,4 +128,13 @@ const updateProject = async (id, title, description, location, date, organizatio
     if (result.rows.length === 0) {
         throw new Error('Failed to update project');
     }
+};
+
+const deleteProject = async (id) => {
+    const result = await db.query(
+        'DELETE FROM project WHERE project_id = $1 RETURNING project_id',
+        [id]
+    );
+
+    return result.rowCount > 0;
 };

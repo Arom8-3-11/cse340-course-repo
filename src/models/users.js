@@ -34,7 +34,11 @@ const getAllUsers = async () => {
         SELECT u.user_id, u.name, u.email, r.role_name
         FROM users u
         LEFT JOIN roles r ON u.role_id = r.role_id
-        ORDER BY u.user_id
+        ORDER BY CASE r.role_name
+            WHEN 'admin' THEN 0
+            WHEN 'user' THEN 1
+            ELSE 2
+        END, r.role_name, u.user_id
     `;
     const result = await db.query(query);
 

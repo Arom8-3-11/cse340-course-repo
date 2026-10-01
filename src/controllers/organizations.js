@@ -1,5 +1,5 @@
 // Import any needed model functions
-import { getAllOrganizations, getOrganizationById, createOrganization, updateOrganization } from '../models/organizations.js';
+import { getAllOrganizations, getOrganizationById, createOrganization, updateOrganization, deleteOrganization } from '../models/organizations.js';
 import { getProjectsByOrganizationId } from '../models/projects.js';
 import { body, validationResult } from 'express-validator';
 
@@ -62,6 +62,7 @@ export {
     processNewOrganizationForm,
     showEditOrganizationForm,
     processEditOrganizationForm,
+    processDeleteOrganizationForm,
     organizationValidation
 };
 
@@ -127,4 +128,16 @@ const processEditOrganizationForm = async (req, res) => {
     await updateOrganization(organizationId, name, description, contactEmail, logoFilename);
     req.flash('success', 'Organization updated successfully!');
     res.redirect(`/organization/${organizationId}`);
+};
+
+const processDeleteOrganizationForm = async (req, res, next) => {
+    const deleted = await deleteOrganization(req.params.id);
+    if (!deleted) {
+        const err = new Error('Organization Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    req.flash('success', 'Organization and its projects deleted successfully.');
+    res.redirect('/organizations');
 };

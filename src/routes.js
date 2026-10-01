@@ -9,6 +9,7 @@ import {
     processNewOrganizationForm,
     showEditOrganizationForm,
     processEditOrganizationForm,
+    processDeleteOrganizationForm,
     organizationValidation
 } from './controllers/organizations.js';
 import { 
@@ -18,6 +19,7 @@ import {
     processNewProjectForm, 
     showEditProjectForm,
     processEditProjectForm,
+    processDeleteProjectForm,
     projectValidation 
 } from './controllers/projects.js';
 import { 
@@ -29,6 +31,7 @@ import {
     processNewCategoryForm,
     showEditCategoryForm,
     processEditCategoryForm,
+    processDeleteCategoryForm,
     categoryValidation
 } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
@@ -78,6 +81,7 @@ router.post('/new-organization', requireRole('admin'), organizationValidation, p
 router.get('/edit-organization/:id', requireRole('admin'), showEditOrganizationForm);
 // Route to handle the edit organization form submission
 router.post('/edit-organization/:id', requireRole('admin'), organizationValidation, processEditOrganizationForm);
+router.post('/delete-organization/:id', requireRole('admin'), processDeleteOrganizationForm);
 
 // Service projects routes
 router.get('/projects', showProjectsPage);
@@ -92,6 +96,7 @@ router.post('/new-project', requireRole('admin'), projectValidation, processNewP
 router.get('/edit-project/:id', requireRole('admin'), showEditProjectForm);
 // Route to handle the edit project form submission
 router.post('/edit-project/:id', requireRole('admin'), projectValidation, processEditProjectForm);
+router.post('/delete-project/:id', requireRole('admin'), processDeleteProjectForm);
 
 // Routes to handle the assign categories to project form
 router.get('/assign-categories/:projectId', requireRole('admin'), showAssignCategoriesForm);
@@ -110,6 +115,7 @@ router.post('/new-category', requireRole('admin'), categoryValidation, processNe
 router.get('/edit-category/:id', requireRole('admin'), showEditCategoryForm);
 // Route to handle the edit category form submission
 router.post('/edit-category/:id', requireRole('admin'), categoryValidation, processEditCategoryForm);
+router.post('/delete-category/:id', requireRole('admin'), processDeleteCategoryForm);
 
 
 // Error Handling Test Routes

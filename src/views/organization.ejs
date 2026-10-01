@@ -13,6 +13,9 @@
 
     <% if (user && user.role_name === 'admin') { %>
         <p><a href="/edit-organization/<%= organization.organization_id %>">Edit Organization</a></p>
+        <form class="delete-form" action="/delete-organization/<%= organization.organization_id %>" method="POST" onsubmit="return confirm('Delete this organization and all of its projects?')">
+            <button class="button-danger" type="submit">Delete Organization</button>
+        </form>
     <% } %>
 
     <h3>Service Projects</h3>

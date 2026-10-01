@@ -5,19 +5,20 @@
     <% if (users.length > 0) { %>
         <div class="table-scroll">
             <table>
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Role</th>
-                    </tr>
-                </thead>
                 <tbody>
-                    <% users.forEach(registeredUser => { %>
+                    <% let currentRole = null; users.forEach(registeredUser => { %>
+                        <% const roleName = registeredUser.role_name || 'Unassigned'; if (roleName !== currentRole) { currentRole = roleName; %>
+                            <tr class="users-role-row">
+                                <th colspan="2" scope="rowgroup"><%= roleName %></th>
+                            </tr>
+                        <tr class="users-column-row">
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                        <% } %>
                         <tr>
                             <td><%= registeredUser.name %></td>
                             <td><%= registeredUser.email %></td>
-                            <td><%= registeredUser.role_name || 'Unassigned' %></td>
                         </tr>
                     <% }); %>
                 </tbody>

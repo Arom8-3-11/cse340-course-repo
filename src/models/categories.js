@@ -78,7 +78,8 @@ export {
     getProjectsByCategoryId,
     updateCategoryAssignments,
     createCategory,
-    updateCategory
+    updateCategory,
+    deleteCategory
 };
 
 // Function to insert a new category and return the ID of the created record
@@ -111,6 +112,15 @@ const updateCategory = async (id, name) => {
     `;
 
     await db.query(query, [id, name]);
+};
+
+const deleteCategory = async (id) => {
+    const result = await db.query(
+        'DELETE FROM category WHERE category_id = $1 RETURNING category_id',
+        [id]
+    );
+
+    return result.rowCount > 0;
 };
 
 // Inserts a single category/project link into the many-to-many junction table

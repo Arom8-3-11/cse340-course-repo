@@ -28,6 +28,9 @@
     <% if (user && user.role_name === 'admin') { %>
         <p><a href="/edit-project/<%= project.project_id %>">Edit Project</a></p>
         <p><a href="/assign-categories/<%= project.project_id %>">Edit Categories</a></p>
+        <form class="delete-form" action="/delete-project/<%= project.project_id %>" method="POST" onsubmit="return confirm('Delete this project? Its category assignments will also be removed.')">
+            <button class="button-danger" type="submit">Delete Project</button>
+        </form>
     <% } %>
 </main>
 <%- include('partials/footer') %>

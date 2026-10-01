@@ -1,5 +1,5 @@
 // Import project model functions
-import { getUpcomingProjects, getProjectDetails, createProject, updateProject } from '../models/projects.js';
+import { getUpcomingProjects, getProjectDetails, createProject, updateProject, deleteProject } from '../models/projects.js';
 // Import category model functions used by project forms and project details
 import { getAllCategories, getCategoriesByProjectId, updateCategoryAssignments } from '../models/categories.js';
 // Import organization model function to populate the organization dropdown on the new project form
@@ -86,6 +86,7 @@ export {
     processNewProjectForm, 
     showEditProjectForm,
     processEditProjectForm,
+    processDeleteProjectForm,
     projectValidation 
 };
 
@@ -161,4 +162,16 @@ const processEditProjectForm = async (req, res) => {
     await updateCategoryAssignments(projectId, categoryIds);
     req.flash('success', 'Service project updated successfully!');
     res.redirect(`/project/${projectId}`);
+};
+
+const processDeleteProjectForm = async (req, res, next) => {
+    const deleted = await deleteProject(req.params.id);
+    if (!deleted) {
+        const err = new Error('Project Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    req.flash('success', 'Project deleted successfully.');
+    res.redirect('/projects');
 };

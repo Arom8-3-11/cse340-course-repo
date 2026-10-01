@@ -6,7 +6,8 @@ import {
     getCategoriesByProjectId,
     updateCategoryAssignments,
     createCategory,
-    updateCategory
+    updateCategory,
+    deleteCategory
 } from '../models/categories.js';
 // Import project model function to display project details on the assign categories form
 import { getProjectDetails } from '../models/projects.js';
@@ -69,6 +70,7 @@ export {
     processNewCategoryForm,
     showEditCategoryForm,
     processEditCategoryForm,
+    processDeleteCategoryForm,
     categoryValidation
 };
 
@@ -133,6 +135,18 @@ const processEditCategoryForm = async (req, res) => {
     await updateCategory(categoryId, name);
     req.flash('success', 'Category updated successfully!');
     res.redirect(`/category/${categoryId}`);
+};
+
+const processDeleteCategoryForm = async (req, res, next) => {
+    const deleted = await deleteCategory(req.params.id);
+    if (!deleted) {
+        const err = new Error('Category Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    req.flash('success', 'Category deleted successfully.');
+    res.redirect('/categories');
 };
 
 // Controller to render the checkbox form used to assign categories to a project

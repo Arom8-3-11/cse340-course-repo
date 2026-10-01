@@ -62,4 +62,13 @@ const updateOrganization = async (id, name, description, contactEmail, logoFilen
     await db.query(query, queryParams);
 };
 
-export { createOrganization, updateOrganization };
+const deleteOrganization = async (id) => {
+    const result = await db.query(
+        'DELETE FROM organization WHERE organization_id = $1 RETURNING organization_id',
+        [id]
+    );
+
+    return result.rowCount > 0;
+};
+
+export { createOrganization, updateOrganization, deleteOrganization };
