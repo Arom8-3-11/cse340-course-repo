@@ -9,6 +9,9 @@
                 <%= new Date(project.project_date || project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>:
                 <strong><a href="/project/<%= project.project_id %>"><%= project.title %></a></strong>
                 (<a href="/organization/<%= project.organization_id %>"><em><%= project.organization_name %></em></a>)
+                <% if (user && user.role_name === 'admin') { %>
+                    <p>Volunteers: <%= project.volunteer_count %></p>
+                <% } %>
                 <p><%= project.description %></p>
             </li>
         <% }); %>

@@ -1,5 +1,5 @@
 // Import project model functions
-import { getUpcomingProjects, getProjectDetails, createProject, updateProject, deleteProject } from '../models/projects.js';
+import { getUpcomingProjects, getProjectDetails, createProject, updateProject, deleteProject, addVolunteer, removeVolunteer, isUserVolunteering } from '../models/projects.js';
 // Import category model functions used by project forms and project details
 import { getAllCategories, getCategoriesByProjectId, updateCategoryAssignments } from '../models/categories.js';
 // Import organization model function to populate the organization dropdown on the new project form
@@ -70,12 +70,44 @@ const showProjectDetailsPage = async (req, res, next) => {
 
         // Retrieve category tags associated with this project
         const categories = await getCategoriesByProjectId(id);
+        const isVolunteering = req.session?.user
+            ? await isUserVolunteering(id, req.session.user.user_id)
+            : false;
         const title = project.title;
 
-        res.render('project', { title, project, categories });
+        res.render('project', { title, project, categories, isVolunteering });
     } catch (error) {
         next(error);
     }
+};
+
+const processVolunteerSignup = async (req, res, next) => {
+    const project = await getProjectDetails(req.params.id);
+    if (!project) {
+        const err = new Error('Project Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    await addVolunteer(req.params.id, req.session.user.user_id);
+    req.flash('success', 'You are volunteering for this project.');
+    res.redirect(`/project/${req.params.id}`);
+};
+
+const processVolunteerRemoval = async (req, res, next) => {
+    const project = await getProjectDetails(req.params.id);
+    if (!project) {
+        const err = new Error('Project Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    await removeVolunteer(req.params.id, req.session.user.user_id);
+    req.flash('success', 'You are no longer volunteering for this project.');
+    const redirectPath = req.body.returnTo === 'dashboard'
+        ? '/dashboard'
+        : `/project/${req.params.id}`;
+    res.redirect(redirectPath);
 };
 
 // Export controller functions
@@ -87,6 +119,8 @@ export {
     showEditProjectForm,
     processEditProjectForm,
     processDeleteProjectForm,
+    processVolunteerSignup,
+    processVolunteerRemoval,
     projectValidation 
 };
 

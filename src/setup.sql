@@ -144,6 +144,23 @@ CREATE TABLE users (
 
 
 
+-- ========================================
+-- Project Volunteer Junction Table
+-- ========================================
+CREATE TABLE project_volunteer (
+    project_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (project_id, user_id),
+    CONSTRAINT fk_project_volunteer_project
+        FOREIGN KEY (project_id)
+        REFERENCES project(project_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_project_volunteer_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+);
+
 -- Admin check
 
 -- -- Check the registered users without displaying password hashes

@@ -6,6 +6,14 @@
         <% } %>
         </p>
     </footer>
+    <dialog class="confirmation-dialog" id="confirmation-dialog" aria-labelledby="confirmation-dialog-title" aria-describedby="confirmation-dialog-message">
+        <h2 id="confirmation-dialog-title">Confirm removal</h2>
+        <p id="confirmation-dialog-message"></p>
+        <div class="confirmation-dialog-actions">
+            <button class="button-secondary" id="confirmation-dialog-cancel" type="button">Cancel</button>
+            <button id="confirmation-dialog-confirm" type="button">Confirm</button>
+        </div>
+    </dialog>
     <script src="/js/form-submit-guard.js" defer></script>
     <script src="/js/navigation-menu.js" defer></script>
 </body>

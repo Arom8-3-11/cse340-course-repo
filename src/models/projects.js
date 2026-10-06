@@ -4,7 +4,10 @@ import db from './db.js';
 const getAllProjects = async () => {
     // Include the sponsoring organization name with each service project.
     const query = `
-        SELECT p.project_id, p.title, p.description, p.location, p.project_date, o.name AS organization_name
+        SELECT p.project_id, p.title, p.description, p.location, p.project_date,
+            o.name AS organization_name,
+            (SELECT COUNT(*) FROM public.project_volunteer pv
+                WHERE pv.project_id = p.project_id) AS volunteer_count
         FROM public.project p
         JOIN public.organization o
             ON p.organization_id = o.organization_id
@@ -28,7 +31,9 @@ const getUpcomingProjects = async (number_of_projects) => {
             p.project_date AS date, 
             p.location, 
             p.organization_id, 
-            o.name AS organization_name
+            o.name AS organization_name,
+            (SELECT COUNT(*) FROM public.project_volunteer pv
+                WHERE pv.project_id = p.project_id) AS volunteer_count
         FROM public.project p
         JOIN public.organization o
             ON p.organization_id = o.organization_id
@@ -54,7 +59,9 @@ const getProjectDetails = async (id) => {
             p.project_date AS date, 
             p.location, 
             p.organization_id, 
-            o.name AS organization_name
+            o.name AS organization_name,
+            (SELECT COUNT(*) FROM public.project_volunteer pv
+                WHERE pv.project_id = p.project_id) AS volunteer_count
         FROM public.project p
         JOIN public.organization o
             ON p.organization_id = o.organization_id
@@ -81,11 +88,58 @@ const getProjectsByOrganizationId = async (organizationId) => {
     return result.rows;
 };
 
+const addVolunteer = async (projectId, userId) => {
+    const result = await db.query(`
+        INSERT INTO project_volunteer (project_id, user_id)
+        VALUES ($1, $2)
+        ON CONFLICT (project_id, user_id) DO NOTHING;
+    `, [projectId, userId]);
+
+    return result.rowCount > 0;
+};
+
+const removeVolunteer = async (projectId, userId) => {
+    const result = await db.query(`
+        DELETE FROM project_volunteer
+        WHERE project_id = $1 AND user_id = $2;
+    `, [projectId, userId]);
+
+    return result.rowCount > 0;
+};
+
+const isUserVolunteering = async (projectId, userId) => {
+    const result = await db.query(`
+        SELECT 1
+        FROM project_volunteer
+        WHERE project_id = $1 AND user_id = $2;
+    `, [projectId, userId]);
+
+    return result.rowCount > 0;
+};
+
+const getVolunteerProjects = async (userId) => {
+    const result = await db.query(`
+        SELECT p.project_id, p.title, p.description, p.location, p.project_date,
+            o.name AS organization_name
+        FROM project_volunteer pv
+        JOIN project p ON p.project_id = pv.project_id
+        JOIN organization o ON o.organization_id = p.organization_id
+        WHERE pv.user_id = $1
+        ORDER BY p.project_date, p.title;
+    `, [userId]);
+
+    return result.rows;
+};
+
 export { 
     getAllProjects, 
     getUpcomingProjects, 
     getProjectDetails, 
     getProjectsByOrganizationId,
+    addVolunteer,
+    removeVolunteer,
+    isUserVolunteering,
+    getVolunteerProjects,
     createProject,
     updateProject,
     deleteProject

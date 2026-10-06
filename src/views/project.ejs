@@ -11,8 +11,24 @@
     <p><strong>Organization:</strong> <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></p>
     <p><strong>Date:</strong> <%= new Date(project.project_date || project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
     <p><strong>Location:</strong> <%= project.location %></p>
+    <% if (user && user.role_name === 'admin') { %>
+        <p><strong>Volunteers:</strong> <%= project.volunteer_count %></p>
+    <% } %>
     
     <p><%= project.description %></p>
+
+    <% if (user) { %>
+        <% if (isVolunteering) { %>
+            <p>You are volunteering for this project.</p>
+            <form action="/project/<%= project.project_id %>/unvolunteer" method="POST" data-confirm-message="Are you sure you want to be removed from the project?">
+                <button type="submit">Remove My Volunteer Signup</button>
+            </form>
+        <% } else { %>
+            <form action="/project/<%= project.project_id %>/volunteer" method="POST">
+                <button type="submit">Volunteer for This Project</button>
+            </form>
+        <% } %>
+    <% } %>
 
     <% if (categories && categories.length > 0) { %>
         <h3>Categories</h3>

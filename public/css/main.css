@@ -223,6 +223,40 @@ form {
     max-width: 40rem;
 }
 
+dialog.confirmation-dialog {
+    width: min(32rem, calc(100% - 2rem));
+    max-width: 32rem;
+    padding: 1.5rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+dialog.confirmation-dialog::backdrop {
+    background: rgba(17, 17, 17, 0.55);
+}
+
+.confirmation-dialog h2 {
+    margin-top: 0;
+    font-size: 1.3rem;
+}
+
+.confirmation-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.confirmation-dialog .button-secondary {
+    background: var(--muted);
+}
+
+section[aria-labelledby="volunteering-heading"] li form {
+    margin-top: 5px;
+}
+
 .form-group {
     margin-bottom: 0.6rem;
 }
@@ -296,6 +330,20 @@ button {
 
 button:hover {
     background: #66184f;
+}
+
+form[data-confirm-message] button:hover,
+form[data-confirm-message] button:focus-visible,
+.confirmation-dialog button:hover,
+.confirmation-dialog button:focus-visible {
+    background: #2b0a23;
+    outline: 3px solid #111111;
+    outline-offset: 2px;
+}
+
+.confirmation-dialog .button-secondary:hover,
+.confirmation-dialog .button-secondary:focus-visible {
+    background: #39424d;
 }
 
 .button-danger {

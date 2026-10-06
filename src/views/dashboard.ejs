@@ -7,5 +7,25 @@
     <% if (user && user.role_name === 'admin') { %>
         <p><a href="/users">View Registered Users</a></p>
     <% } %>
+
+    <section aria-labelledby="volunteering-heading">
+        <h2 id="volunteering-heading">My Volunteer Projects</h2>
+        <% if (volunteerProjects.length > 0) { %>
+            <ul>
+                <% volunteerProjects.forEach(project => { %>
+                    <li>
+                        <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+                        <span> | <%= project.organization_name %> | <%= new Date(project.project_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                        <form action="/project/<%= project.project_id %>/unvolunteer" method="POST" data-confirm-message="Are you sure you want to be removed from the project?">
+                            <input type="hidden" name="returnTo" value="dashboard">
+                            <button type="submit">Remove My Signup</button>
+                        </form>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>You have not signed up to volunteer for any projects yet.</p>
+        <% } %>
+    </section>
 </main>
 <%- include('partials/footer') %>
